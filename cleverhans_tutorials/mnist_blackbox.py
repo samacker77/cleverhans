@@ -252,7 +252,21 @@ def mnist_blackbox(train_start=0, train_end=60000, test_start=0,
                             nb_epochs, batch_size, learning_rate,
                             rng, nb_classes, img_rows, img_cols, nchannels)
   model, bbox_preds, accuracies['bbox'] = prep_bbox_out
+  encoded_images = sess.run(x_adv_sub, feed_dict={x: X_test})
 
+  import os
+  from PIL import Image
+  import datetime 
+  directory = "/tmp/adv_learn/example_images/adversarials/" + datetime.datetime.now().strftime("%Y%m%d%H%M") + "/"
+  if not os.path.exists(directory):
+     os.makedirs(directory)
+  images = []
+  for idx, img_arr in enumerate(encoded_images):
+             img = Image.fromarray(np.squeeze(img_arr) * 255).convert("RGB") # Pixels are in range 0 to 1 and need to be in 0-255 for PIL
+     #img.show()
+     path = directory + str(idx) + ".jpeg"
+     img.save(path, "JPEG")
+     images.append({"Path": path, "img": img})
   # Train substitute using method from https://arxiv.org/abs/1602.02697
   print("Training the substitute model.")
   train_sub_out = train_sub(sess, x, y, bbox_preds, x_sub, y_sub,
