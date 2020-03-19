@@ -264,9 +264,9 @@ def mnist_blackbox(train_start=0, train_end=60000, test_start=0,
   for idx, img_arr in enumerate(encoded_images):
              img = Image.fromarray(np.squeeze(img_arr) * 255).convert("RGB") # Pixels are in range 0 to 1 and need to be in 0-255 for PIL
      #img.show()
-     path = directory + str(idx) + ".jpeg"
-     img.save(path, "JPEG")
-     images.append({"Path": path, "img": img})
+  path = directory + str(idx) + ".jpeg"
+  img.save(path, "JPEG")
+  images.append({"Path": path, "img": img})
   # Train substitute using method from https://arxiv.org/abs/1602.02697
   print("Training the substitute model.")
   train_sub_out = train_sub(sess, x, y, bbox_preds, x_sub, y_sub,
